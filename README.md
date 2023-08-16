@@ -1,6 +1,7 @@
 ## qjoin
 
 [![ci](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml/badge.svg)](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml)
+[![Documentation Status](https://readthedocs.org/projects/qjoin/badge/?version=latest)](https://qjoin.readthedocs.io/en/latest/?badge=latest)
 
 **Work in progress ..., everything has to be implemented**
 
@@ -15,7 +16,7 @@ qjoin is a data manipulation library that provides simple and efficient joining 
 ## Project links
 
 * PyPI Releases
-* Documentation
+* [Documentation](https://qjoin.readthedocs.io/en/latest/)
 * [Source code](https://github.com/FabienArcellier/qjoin)
 * [Issue tracker](https://github.com/FabienArcellier/qjoin/issues)
 * [Chat](https://discord.gg/nMn9YPRGSY)

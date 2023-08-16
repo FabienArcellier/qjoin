@@ -13,6 +13,15 @@ qjoin is a data manipulation library that provides simple and efficient joining 
 
    principle diagram
 
+Project links
+*************
+
+* PyPI Releases
+* `Documentation <https://qjoin.readthedocs.io/en/latest/>`__
+* `Source code <https://github.com/FabienArcellier/qjoin>`__
+* `Issue tracker <https://github.com/FabienArcellier/qjoin/issues>`__
+* `Chat <https://discord.gg/nMn9YPRGSY>`__
+
 .. toctree::
    :maxdepth: 1
 
