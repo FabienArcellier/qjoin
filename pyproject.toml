@@ -23,6 +23,7 @@ pytest = "^7.4.0"
 toml = "^0.10.2"
 sphinx = "^6.0.0"
 sphinx-rtd-theme = "^1.2.2"
+twine = "^4.0.2"
 
 [build-system]
 requires = ["poetry-core"]
