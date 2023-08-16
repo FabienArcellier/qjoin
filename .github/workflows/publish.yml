@@ -31,3 +31,6 @@ jobs:
 
             - name: publish on pypi
               run: poetry run alfred publish:twine
+              env:
+                TWINE_USERNAME: __token__
+                TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}

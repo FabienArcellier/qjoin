@@ -3,7 +3,7 @@ name = "qjoin"
 description = "qjoin is a data manipulation library that provides simple and efficient joining and collection processing functionality"
 authors = ["Fabien Arcellier <fabien.arcellier@gmail.com>"]
 license = "MIT"
-version = "0.0.1.alpha0"
+version = "0.0.1.alpha1"
 readme = "README.md"
 packages = [{include = "qjoin", from = "src"}]
 classifiers = [
