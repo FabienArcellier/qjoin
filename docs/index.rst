@@ -7,7 +7,7 @@ qjoin is a data manipulation library that provides simple and efficient joining 
 * qjoin is a steroid extension of the `zip` function in python
 * qjoin works on all iterators, whether lists of dictionaries, objects or sqlalchemy or django models
 
-.. figure:: principle.png
+.. figure:: https://github.com/FabienArcellier/qjoin/raw/master/docs/principle.png
    :align: center
    :alt: principle diagram
 
@@ -16,7 +16,7 @@ qjoin is a data manipulation library that provides simple and efficient joining 
 Project links
 *************
 
-* PyPI Releases
+* `PyPI Releases <https://pypi.org/project/qjoin/>`__
 * `Documentation <https://qjoin.readthedocs.io/en/latest/>`__
 * `Source code <https://github.com/FabienArcellier/qjoin>`__
 * `Issue tracker <https://github.com/FabienArcellier/qjoin/issues>`__
