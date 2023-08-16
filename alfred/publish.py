@@ -74,7 +74,7 @@ def publish__pypi():
     alfred.invoke_command('publish:twine')
 
 
-@alfred.command("publish:twine", help="push fixtup to pypi")
+@alfred.command("publish:twine", help="push to pypi")
 def publish__twine():
     """
     push fixtup to pypi

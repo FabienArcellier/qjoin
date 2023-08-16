@@ -30,7 +30,7 @@ jobs:
                 poetry install
 
             - name: publish on pypi
-              run: poetry run alfred publish:twine
+              run: poetry run alfred publish:pypi
               env:
                 TWINE_USERNAME: __token__
                 TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
