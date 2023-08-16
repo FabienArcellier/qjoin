@@ -1,0 +1,9 @@
+/.git
+/.github
+/.venv
+/.mypy_cache
+/alfred
+/build
+/tests
+.coveragerc
+.editorconfig

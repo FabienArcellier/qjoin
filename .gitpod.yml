@@ -1,0 +1,7 @@
+image: gitpod/workspace-full
+
+tasks:
+    - name: Setup, Install & Build
+      before: pip install poetry
+      init: poetry install
+      command: poetry shell

@@ -1,0 +1,15 @@
+# this directory allow pipenv to initialise the virtualenv inside
+# the project directory by default
+#
+# @see https://stackoverflow.com/a/57922911
+/.venv
+__pycache__
+.mypy_cache
+**/*.pyc
+/.idea
+/build
+/dist
+*.egg-info
+
+# Sphinx documentation
+/docs/_build

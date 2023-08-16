@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "qjoin"
+description = "qjoin is a data manipulation library that provides simple and efficient joining and collection processing functionality"
+authors = ["Fabien Arcellier <fabien.arcellier@gmail.com>"]
+license = "MIT"
+version = "0.0.1.alpha0"
+readme = "README.md"
+packages = [{include = "qjoin", from = "src"}]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.group.dev.dependencies]
+alfred-cli = "^2.1.1"
+mypy = "^1.4.1"
+pytest = "^7.4.0"
+toml = "^0.10.2"
+sphinx = "^6.0.0"
+sphinx-rtd-theme = "^1.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
