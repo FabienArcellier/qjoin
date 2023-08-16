@@ -49,7 +49,7 @@ def publish():
         sys.exit(1)
 
     version = __version()
-    if version == __version():
+    if current_version == __version():
         click.echo(click.style(f"Version {version} already exists, update version in pyproject.toml", fg='red'))
         sys.exit(1)
 
