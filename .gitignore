@@ -10,6 +10,7 @@ __pycache__
 /build
 /dist
 *.egg-info
+/docs/*.bkp
 
 # Sphinx documentation
 /docs/_build
