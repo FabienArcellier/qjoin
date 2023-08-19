@@ -66,7 +66,10 @@ Merge collections from a common key
     global_space_crafts = qjoin.on(spacecrafts).join(spacecrafts_properties, key='name')
     for spacecraft, spacecraft_properties in global_space_crafts:
         print(spacecraft['name'])
+        print('-' * len(spacecraft['name']))
         print(spacecrafts_property['dimension'])
+        print('')
+        print('')
 
 Merge collections with a key is on 2 different attributes
 *********************************************************
@@ -77,7 +80,10 @@ Merge collections with a key is on 2 different attributes
     global_space_crafts = qjoin.on(spacecrafts).join(spacecrafts_mission_infos, left='name', right='mission')
     for spacecraft, spacecraft_mission_infos in global_space_crafts:
         print(spacecraft['name'])
+        print('-' * len(spacecraft['name']))
         print(spacecrafts_mission_info.get('launch_date', 'N/D'))
+        print('')
+        print('')
 
 Merge collections from artificial key
 *************************************
@@ -88,7 +94,10 @@ Merge collections from artificial key
     global_space_crafts = qjoin.on(spacecrafts).join(spacecrafts_mission_infos, left=lambda s: s.name.lower(), right=lambda s: s.mission.lower())
     for spacecraft, spacecraft_mission_infos in global_space_crafts:
         print(spacecraft['name'])
+        print('-' * len(spacecraft['name']))
         print(spacecrafts_mission_info.get('launch_date', 'N/D'))
+        print('')
+        print('')
 
 Merge collections and encapsulate them in a class instance
 **********************************************************
