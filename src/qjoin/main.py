@@ -52,7 +52,14 @@ class Qjoin:
         """
         Performs a join in a qjoin query with the base collection.
 
-        The first technique is to use a simple key as the join key.
+        ``join`` must define a join key. It is possible to use a simple key shared by the base collection
+        and the collection to be joined with ``key`` parameter or to use a key specific to each collection
+        with ``left`` and ``right`` parameters.
+
+        A key can either be the name of a field in the collection, or a function that takes an element of
+        the collection as a parameter and returns a value on which to join.
+
+        A first technique is to use a simple key as the join key.
 
         >>> spacecrafts = [
         >>>    {'name': 'Kepler', 'cospar_id': '2009-011A', 'satcat': 34380},
@@ -129,6 +136,7 @@ def on(collection: Iterable[Any]) -> 'Qjoin':
     >>>    {'name': 'lucy', 'cospar_id': '2021-093A', 'satcat': 49328},
     >>>    {'name': 'Psyche', 'cospar_id': None, 'satcat': None},
     >>> ]
+    >>>
     >>> for spacecraft in qjoin.on(spacecrafts):
     >>>     print(spacecraft['name'])
     """
