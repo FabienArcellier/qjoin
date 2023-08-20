@@ -22,14 +22,17 @@ class Qjoin:
 
     def __iter__(self):
         predicates = []
+        if _is_collection_empty(self._base_collection):
+            return []
+
         for join_definition in self.join_definitions:
             is_key_used = join_definition.key is not None
-            is_key_str = join_definition.key is not None and isinstance(join_definition.key, str)
+            is_key_subscription = join_definition.key is not None and (isinstance(join_definition.key, str) or isinstance(join_definition.key, int))
             is_key_func = join_definition.key is not None and callable(join_definition.key)
             is_left_right_used = join_definition.key is None and join_definition.left is not None and join_definition.right is not None
-            is_left_str = join_definition.left is not None and isinstance(join_definition.left, str)
+            is_left_subscription = join_definition.left is not None and (isinstance(join_definition.left, str) or isinstance(join_definition.left, int))
             is_left_func = join_definition.left is not None and callable(join_definition.left)
-            is_right_str = join_definition.right is not None and isinstance(join_definition.right, str)
+            is_right_subscription = join_definition.right is not None and (isinstance(join_definition.right, str) or isinstance(join_definition.right, int))
             is_right_func = join_definition.right is not None and callable(join_definition.right)
 
             if _is_collection_subscriptable(self._base_collection):
@@ -37,21 +40,23 @@ class Qjoin:
             else:
                 get_elt_left = lambda elt, key: getattr(elt, key)
 
-            if _is_collection_subscriptable(join_definition.collection):
+            if _is_collection_empty(join_definition.collection):
+                get_elt_right = lambda elt, key: None
+            elif _is_collection_subscriptable(join_definition.collection):
                 get_elt_right = lambda elt, key: elt[key]
             else:
                 get_elt_right = lambda elt, key: getattr(elt, key)
 
             predicate = lambda elt_left, elt_right: False
-            if is_key_used and is_key_str:
+            if is_key_used and is_key_subscription:
                 predicate = lambda elt_left, elt_right: get_elt_left(elt_left, join_definition.key) == get_elt_right(elt_right, join_definition.key)
             elif is_key_used and is_key_func:
                 predicate = lambda elt_left, elt_right: join_definition.key(elt_left) == join_definition.key(elt_right)
-            elif is_left_right_used and is_left_str is True and is_right_str is True:
+            elif is_left_right_used and is_left_subscription is True and is_right_subscription is True:
                 predicate = lambda elt_left, elt_right: get_elt_left(elt_left, join_definition.left) == get_elt_right(elt_right, join_definition.right)
-            elif is_left_right_used and is_left_func is True and is_right_str is True:
+            elif is_left_right_used and is_left_func is True and is_right_subscription is True:
                 predicate = lambda elt_left, elt_right: join_definition.left(elt_left) == get_elt_right(elt_right, join_definition.right)
-            elif is_left_right_used and is_left_str is True and is_right_func is True:
+            elif is_left_right_used and is_left_subscription is True and is_right_func is True:
                 predicate = lambda elt_left, elt_right: get_elt_left(elt_left, join_definition.left) == join_definition.right(elt_right)
             elif is_left_right_used and is_left_func is True and is_right_func is True:
                 predicate = lambda elt_left, elt_right: join_definition.left(elt_left) == join_definition.right(elt_right)
@@ -74,9 +79,9 @@ class Qjoin:
             yield tuple(result)
 
     def join(self, collection: Iterable[Any],
-             key: Optional[Union[str, Callable[[Any], Hashable]]] = None,
-             left: Optional[Union[str, Callable[[Any], Hashable]]] = None,
-             right: Optional[Union[str, Callable[[Any], Hashable]]] = None) -> 'Qjoin':
+             key: Optional[Union[int, str, Callable[[Any], Hashable]]] = None,
+             left: Optional[Union[int, str, Callable[[Any], Hashable]]] = None,
+             right: Optional[Union[int, str, Callable[[Any], Hashable]]] = None) -> 'Qjoin':
         """
         Performs a join in a qjoin query with the base collection.
 
@@ -190,8 +195,20 @@ def on(collection: Iterable[Any]) -> 'Qjoin':
 
 
 def _is_collection_subscriptable(collection: Iterable[Any]) -> bool:
+    """
+    Identifie si les éléments d'une collection sont adressés par index, comme par exemple pour une liste, un tuple ou un dictionnaire
+    ou si les éléments sont adressés par clé, comme par exemple pour un dictionnaire ou par attribut, comme par exemple pour un objet.
+    """
     first = next(collection.__iter__())
     return hasattr(first, '__getitem__')
+
+
+def _is_collection_empty(collection: Iterable[Any]) -> bool:
+    try:
+        first = next(collection.__iter__())
+        return False
+    except StopIteration:
+        return True
 
 
 def _predicate_left_func_and_right_str(join_definition: QjoinJoin, elt_left: Any, elt_right: Any):

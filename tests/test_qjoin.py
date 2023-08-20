@@ -120,7 +120,7 @@ def tests_qjoin_join_request_should_use_left_and_right_key_to_join_2_collections
     """
     tests that the join function joins 2 collections that use different keys using left and right parameters.
     """
-    # Assert
+    # Assign
     spacecrafts = [
         {'name': 'Kepler', 'cospar_id': '2009-011A', 'satcat': 34380},
         {'name': 'GRAIL (A)', 'cospar_id': '2011-046', 'satcat': 37801},
@@ -149,12 +149,11 @@ def tests_qjoin_join_request_should_use_left_and_right_key_to_join_2_collections
     assert spacecraft_global[4][1] == None
 
 
-
-def tests_qjoin_join_joins_2_collection_of_objects():
+def tests_qjoin_join_joins_collection_of_object_with_collection_of_dict():
     """
     tests that the join joins 2 collections of objects
     """
-    # Assert
+    # Assign
     @dataclasses.dataclass
     class Spacecraft:
         name: str
@@ -188,3 +187,98 @@ def tests_qjoin_join_joins_2_collection_of_objects():
     assert spacecraft_global[4][0].name == 'Psyche'
     assert spacecraft_global[4][1] == None
 
+def tests_qjoin_join_joins_collection_of_tuple_with_collection_of_dict():
+    """
+    tests that the join joins 2 collections of objects
+    """
+    # Assign
+    spacecrafts = [
+        ('Kepler', '2009-011A', 34380),
+        ('GRAIL (A)', '2011-046', 37801),
+        ('InSight', '2018-042a', 43457),
+        ('lucy', '2021-093A', 49328),
+        ('Psyche', None, None),
+    ]
+
+    spacecraft_properties = [
+        {'spacecraft': 'GRAIL (A)', 'launch_mass': 202.4},
+        {'spacecraft': 'InSight', 'dimension': (6, 1.56, 1), 'power': 600, 'launch_mass': 694},
+        {'spacecraft': 'lucy', 'dimension': (13, None, None), 'power': 504, 'launch_mass': 1550},
+        {'spacecraft': 'Kepler', 'dimension': (4.7, 2.7, None), 'power': 1100, 'launch_mass': 1052.4},
+    ]
+
+    # Acts
+    spacecraft_global = qjoin.on(spacecrafts)\
+        .join(spacecraft_properties, left=0, right='spacecraft')\
+        .all()
+
+    # Assert
+    assert len(spacecraft_global) == 5
+    assert spacecraft_global[0][0][0] == 'Kepler'
+    assert spacecraft_global[0][1]['spacecraft'] == 'Kepler'
+    assert spacecraft_global[4][0][0] == 'Psyche'
+    assert spacecraft_global[4][1] == None
+
+
+def tests_qjoin_join_joins_on_empty_base_collection():
+    """
+    tests that the join joins 2 collections of objects
+    """
+    # Assert
+    @dataclasses.dataclass
+    class Spacecraft:
+        name: str
+        cospar_id: Optional[str]
+        satcat: Optional[int]
+
+    spacecrafts = []
+
+    spacecraft_properties = [
+        {'spacecraft': 'GRAIL (A)', 'launch_mass': 202.4},
+        {'spacecraft': 'InSight', 'dimension': (6, 1.56, 1), 'power': 600, 'launch_mass': 694},
+        {'spacecraft': 'lucy', 'dimension': (13, None, None), 'power': 504, 'launch_mass': 1550},
+        {'spacecraft': 'Kepler', 'dimension': (4.7, 2.7, None), 'power': 1100, 'launch_mass': 1052.4},
+    ]
+
+    # Acts
+    spacecraft_global = qjoin.on(spacecrafts)\
+        .join(spacecraft_properties, left='name', right='spacecraft')\
+        .all()
+
+    # Assert
+    assert len(spacecraft_global) == 0
+
+
+def tests_qjoin_join_joins_with_empty_right_collection():
+    """
+    tests that qjoin join function joins with empty right collection
+    """
+    # Assert
+    @dataclasses.dataclass
+    class Spacecraft:
+        name: str
+        cospar_id: Optional[str]
+        satcat: Optional[int]
+
+    spacecrafts = [
+        Spacecraft(name='Kepler', cospar_id='2009-011A', satcat=34380),
+        Spacecraft(name='GRAIL (A)', cospar_id='2011-046', satcat=37801),
+        Spacecraft(name='InSight', cospar_id='2018-042a', satcat=43457),
+        Spacecraft(name='lucy', cospar_id='2021-093A', satcat=49328),
+        Spacecraft(name='Psyche', cospar_id=None, satcat=None),
+    ]
+
+    spacecraft_properties = [
+    ]
+
+    # Acts
+    spacecraft_global = qjoin.on(spacecrafts)\
+        .join(spacecraft_properties, left='name', right='spacecraft')\
+        .all()
+
+    # Assert
+    assert len(spacecraft_global) == 5
+    assert spacecraft_global[0][0].name == 'Kepler'
+    assert spacecraft_global[0][1] == None
+    assert spacecraft_global[4][0].name == 'Psyche'
+    assert spacecraft_global[4][1] == None
