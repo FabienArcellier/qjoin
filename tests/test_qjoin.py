@@ -1,3 +1,6 @@
+import dataclasses
+from typing import Optional
+
 import pytest
 
 import qjoin
@@ -144,3 +147,44 @@ def tests_qjoin_join_request_should_use_left_and_right_key_to_join_2_collections
     assert spacecraft_global[0][1]['spacecraft'] == 'Kepler'
     assert spacecraft_global[4][0]['name'] == 'Psyche'
     assert spacecraft_global[4][1] == None
+
+
+
+def tests_qjoin_join_joins_2_collection_of_objects():
+    """
+    tests that the join joins 2 collections of objects
+    """
+    # Assert
+    @dataclasses.dataclass
+    class Spacecraft:
+        name: str
+        cospar_id: Optional[str]
+        satcat: Optional[int]
+
+    spacecrafts = [
+        Spacecraft(name='Kepler', cospar_id='2009-011A', satcat=34380),
+        Spacecraft(name='GRAIL (A)', cospar_id='2011-046', satcat=37801),
+        Spacecraft(name='InSight', cospar_id='2018-042a', satcat=43457),
+        Spacecraft(name='lucy', cospar_id='2021-093A', satcat=49328),
+        Spacecraft(name='Psyche', cospar_id=None, satcat=None),
+    ]
+
+    spacecraft_properties = [
+        {'spacecraft': 'GRAIL (A)', 'launch_mass': 202.4},
+        {'spacecraft': 'InSight', 'dimension': (6, 1.56, 1), 'power': 600, 'launch_mass': 694},
+        {'spacecraft': 'lucy', 'dimension': (13, None, None), 'power': 504, 'launch_mass': 1550},
+        {'spacecraft': 'Kepler', 'dimension': (4.7, 2.7, None), 'power': 1100, 'launch_mass': 1052.4},
+    ]
+
+    # Acts
+    spacecraft_global = qjoin.on(spacecrafts)\
+        .join(spacecraft_properties, left='name', right='spacecraft')\
+        .all()
+
+    # Assert
+    assert len(spacecraft_global) == 5
+    assert spacecraft_global[0][0].name == 'Kepler'
+    assert spacecraft_global[0][1]['spacecraft'] == 'Kepler'
+    assert spacecraft_global[4][0].name == 'Psyche'
+    assert spacecraft_global[4][1] == None
+
