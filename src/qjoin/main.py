@@ -10,6 +10,8 @@ class QjoinJoin:
     """
     collection: Iterable[Any]
     key: Optional[Union[str, Callable[[Any], Hashable]]] = None
+    left: Optional[Union[str, Callable[[Any], Hashable]]] = None
+    right: Optional[Union[str, Callable[[Any], Hashable]]] = None
 
 
 class Qjoin:
@@ -24,12 +26,25 @@ class Qjoin:
             is_key_used = join_definition.key is not None
             is_key_str = join_definition.key is not None and isinstance(join_definition.key, str)
             is_key_func = join_definition.key is not None and callable(join_definition.key)
+            is_left_right_used = join_definition.key is None and join_definition.left is not None and join_definition.right is not None
+            is_left_str = join_definition.left is not None and isinstance(join_definition.left, str)
+            is_left_func = join_definition.left is not None and callable(join_definition.left)
+            is_right_str = join_definition.right is not None and isinstance(join_definition.right, str)
+            is_right_func = join_definition.right is not None and callable(join_definition.right)
 
             predicate = lambda elt_left, elt_right: False
             if is_key_used and is_key_str:
                 predicate = lambda elt_left, elt_right: elt_left[join_definition.key] == elt_right[join_definition.key]
             elif is_key_used and is_key_func:
                 predicate = lambda elt_left, elt_right: join_definition.key(elt_left) == join_definition.key(elt_right)
+            elif is_left_right_used and is_left_str is True and is_right_str is True:
+                predicate = lambda elt_left, elt_right: elt_left[join_definition.left] == elt_right[join_definition.right]
+            elif is_left_right_used and is_left_func is True and is_right_str is True:
+                predicate = lambda elt_left, elt_right: join_definition.left(elt_left) == elt_right[join_definition.right]
+            elif is_left_right_used and is_left_str is True and is_right_func is True:
+                predicate = lambda elt_left, elt_right: elt_left[join_definition.left] == join_definition.right(elt_right)
+            elif is_left_right_used and is_left_func is True and is_right_func is True:
+                predicate = lambda elt_left, elt_right: join_definition.left(elt_left) == join_definition.right(elt_right)
 
             predicates.append(predicate)
 
@@ -48,7 +63,10 @@ class Qjoin:
 
             yield tuple(result)
 
-    def join(self, collection: Iterable[Any], key: Union[str, Callable[[Any], Hashable]] = None) -> 'Qjoin':
+    def join(self, collection: Iterable[Any],
+             key: Union[str, Callable[[Any], Hashable]] = None,
+             left: Union[str, Callable[[Any], Hashable]] = None,
+             right: Union[str, Callable[[Any], Hashable]] = None) -> 'Qjoin':
         """
         Performs a join in a qjoin query with the base collection.
 
@@ -69,6 +87,14 @@ class Qjoin:
         >>>    {'name': 'Psyche', 'cospar_id': None, 'satcat': None},
         >>> ]
         >>>
+        >>> spacecraft_properties = [
+        >>>     {'name': 'Kepler', 'dimension': (4.7, 2.7, None), 'power': 1100, 'launch_mass': 1052.4},
+        >>>     {'name': 'GRAIL (A)', 'launch_mass': 202.4},
+        >>>     {'name': 'InSight', 'dimension': (6, 1.56, 1), 'power': 600, 'launch_mass': 694},
+        >>>     {'name': 'lucy', 'dimension': (13, None, None), 'power': 504, 'launch_mass': 1550},
+        >>> ]
+        >>>
+        >>>
         >>> global_spacecrafts = qjoin.on(spacecrafts).join(spacecrafts_properties, key='name')
         >>> for spacecraft, spacecraft_properties in global_spacecrafts:
         >>>     print(spacecraft['name'])
@@ -80,13 +106,6 @@ class Qjoin:
         A second technique is to use a function to generate a more complex join key.
         This function must return a hashable type in order to be used as a join key.
 
-        >>> spacecrafts = [
-        >>>    {'name': 'Kepler', 'cospar_id': '2009-011A', 'satcat': 34380},
-        >>>    {'name': 'GRAIL (A)', 'cospar_id': '2011-046', 'satcat': 37801},
-        >>>    {'name': 'InSight', 'cospar_id': '2018-042a', 'satcat': 43457},
-        >>>    {'name': 'lucy', 'cospar_id': '2021-093A', 'satcat': 49328},
-        >>>    {'name': 'Psyche', 'cospar_id': None, 'satcat': None},
-        >>> ]
         >>>
         >>> global_spacecrafts = qjoin.on(spacecrafts).join(spacecrafts_properties, key=lambda s: s['name'].lower())
         >>> for spacecraft, spacecraft_properties in global_spacecrafts:
@@ -96,13 +115,30 @@ class Qjoin:
         >>>     print('')
         >>>     print('')
 
+        A third technique is to use a different key for each collection. This is useful when the key is different. The join
+        has to be describe with left and right parameters. Parameters may be either a string or a function.
+
+        >>> spacecraft_properties = [
+        >>>     {'spacecraft': 'Kepler', 'dimension': (4.7, 2.7, None), 'power': 1100, 'launch_mass': 1052.4},
+        >>>     {'spacecraft': 'GRAIL (A)', 'launch_mass': 202.4},
+        >>>     {'spacecraft': 'InSight', 'dimension': (6, 1.56, 1), 'power': 600, 'launch_mass': 694},
+        >>>     {'spacecraft': 'lucy', 'dimension': (13, None, None), 'power': 504, 'launch_mass': 1550},
+        >>> ]
+        >>> global_spacecrafts = qjoin.on(spacecrafts).join(spacecrafts_properties, left=lambda s: s['name'].lower(), right='spacecraft')
+
         The join function is lazy. Until a render function is called like .all or a loop is used on the QJoin instance,
         the join is just declared.
         """
-        if key is None:
+        if key is None and left is None and right is None:
             raise ValueError('A key has to be specified when using join in qjoin query. qjoin.join(key="mykey") or qjoin.join(key=lambda x: x.mykey)')
 
-        join = QjoinJoin(collection, key)
+        if key is not None and (left is not None or right is not None):
+            raise ValueError('key parameter should be used alone, it must not be used with left or right parameters.')
+
+        if left is not None and right is None:
+            raise ValueError('A right key parameter has to be specified when using join in qjoin query and left. qjoin.join(left="any", right="mykey") or qjoin.join(left=lambda x: x.mykey, right=lambda x: x.mykey2)')
+
+        join = QjoinJoin(collection, key=key, left=left, right=right)
         self.join_definitions.append(join)
         return self
 
@@ -141,3 +177,7 @@ def on(collection: Iterable[Any]) -> 'Qjoin':
     >>>     print(spacecraft['name'])
     """
     return Qjoin(collection)
+
+
+def _predicate_left_func_and_right_str(join_definition: QjoinJoin, elt_left: Any, elt_right: Any):
+    return

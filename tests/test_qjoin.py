@@ -111,3 +111,36 @@ def tests_qjoin_join_request_should_fail_when_there_is_no_key_and_left_right_joi
         pytest.xfail('expected ValueError execption because there is no key and no left_right_join')
     except ValueError as exception:
         assert True
+
+
+def tests_qjoin_join_request_should_use_left_and_right_key_to_join_2_collections():
+    """
+    tests that the join function joins 2 collections that use different keys using left and right parameters.
+    """
+    # Assert
+    spacecrafts = [
+        {'name': 'Kepler', 'cospar_id': '2009-011A', 'satcat': 34380},
+        {'name': 'GRAIL (A)', 'cospar_id': '2011-046', 'satcat': 37801},
+        {'name': 'InSight', 'cospar_id': '2018-042a', 'satcat': 43457},
+        {'name': 'lucy', 'cospar_id': '2021-093A', 'satcat': 49328},
+        {'name': 'Psyche', 'cospar_id': None, 'satcat': None},
+    ]
+
+    spacecraft_properties = [
+        {'spacecraft': 'GRAIL (A)', 'launch_mass': 202.4},
+        {'spacecraft': 'InSight', 'dimension': (6, 1.56, 1), 'power': 600, 'launch_mass': 694},
+        {'spacecraft': 'lucy', 'dimension': (13, None, None), 'power': 504, 'launch_mass': 1550},
+        {'spacecraft': 'Kepler', 'dimension': (4.7, 2.7, None), 'power': 1100, 'launch_mass': 1052.4},
+    ]
+
+    # Acts
+    spacecraft_global = qjoin.on(spacecrafts)\
+        .join(spacecraft_properties, left=lambda s: s['name'], right='spacecraft')\
+        .all()
+
+    # Assert
+    assert len(spacecraft_global) == 5
+    assert spacecraft_global[0][0]['name'] == 'Kepler'
+    assert spacecraft_global[0][1]['spacecraft'] == 'Kepler'
+    assert spacecraft_global[4][0]['name'] == 'Psyche'
+    assert spacecraft_global[4][1] == None
