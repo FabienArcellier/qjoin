@@ -1,7 +1,11 @@
 import dataclasses
-from typing import Iterable, Any, Tuple, List, Union, Callable, Hashable, Optional
+from typing import Iterable, Any, Tuple, List, Union, Callable, Hashable, Optional, Type, TypeVar
 
 import qjoin
+from qjoin import logger
+
+T = TypeVar('T')
+
 
 @dataclasses.dataclass
 class QjoinJoin:
@@ -174,6 +178,53 @@ class Qjoin:
         >>>     print(spacecraft['name'])
         """
         return list(self)
+
+    def as_aggregate(self, klass: Type[T], attributes: List[str]) -> List[T]:
+        """
+        Creates a list of type T objects from the data that has been joined. Data is written to the attributes specified
+        in the attributes list in their join order.
+
+
+        >>> @dataclasses.dataclass
+        >>> class SpacecraftsAggregate:
+        >>>   spacecraft: str
+        >>>   properties: str
+
+        >>> spacecrafts = [
+        >>>   {'name': 'Kepler', 'cospar_id': '2009-011A', 'satcat': 34380},
+        >>>   {'name': 'GRAIL (A)', 'cospar_id': '2011-046', 'satcat': 37801},
+        >>>   {'name': 'InSight', 'cospar_id': '2018-042a', 'satcat': 43457},
+        >>>   {'name': 'lucy', 'cospar_id': '2021-093A', 'satcat': 49328},
+        >>>   {'name': 'Psyche', 'cospar_id': None, 'satcat': None},
+        >>> ]
+
+        >>> spacecraft_properties = [
+        >>>   {'spacecraft': 'Kepler', 'dimension': (4.7, 2.7, None), 'power': 1100, 'launch_mass': 1052.4},
+        >>>   {'spacecraft': 'GRAIL (A)', 'launch_mass': 202.4},
+        >>>   {'spacecraft': 'InSight', 'dimension': (6, 1.56, 1), 'power': 600, 'launch_mass': 694},
+        >>>   {'spacecraft': 'lucy', 'dimension': (13, None, None), 'power': 504, 'launch_mass': 1550},
+        >>> ]
+        >>>
+        >>> for spacecraft in qjoin.on(spacecrafts) \
+        >>>                        .join(spacecraft_properties, left='name', right='spacecraft') \
+        >>>                        .as_aggregate(SpacecraftsAggregate, ['spacecraft', 'properties']]):
+        >>>     print(spacecraft.properties['dimension'])
+        """
+        aggregates = []
+        for elt in self:
+            _instance = klass()
+            for index, attr in enumerate(attributes):
+                if not hasattr(_instance, attr):
+                    logger.warning(f'Attribute {attr} is not defined in {klass.__name__} class.')
+
+                setattr(_instance, attr, elt[index])
+
+            if hasattr(_instance, '__post_qjoin__'):
+                _instance.__post_qjoin__()
+
+            aggregates.append(_instance)
+
+        return aggregates
 
 
 def on(collection: Iterable[Any]) -> 'Qjoin':

@@ -107,19 +107,19 @@ Merge collections and encapsulate them in a class instance
 
     @dataclasses.dataclass
     class SpacecraftAggregate:
-        spacecraft: dict
-        spacecraft_mission_infos: dict
-        spacecraft_properties: dict
+        spacecraft: dict = dataclasses.field(init=False)
+        spacecraft_mission_infos: dict = dataclasses.field(init=False)
+        spacecraft_properties: dict = dataclasses.field(init=False)
 
         @property
         def name:
             return self.spacecraft['name']
 
-        def __post_qjoin_hydrate__(self):
+        def __post_qjoin__(self):
             """
-            If this method is present, it will be invoked by qjoin after qjoin has hydrated the object.
+            If this method is present, it will be invoked after qjoin has created the object.
             """
-            print(self.name)
+            print(self.spacecraft['name'])
 
         def __str__(self):
             return f'{self.name} - (mission: { self.spacecraft_mission_infos.get("mission_type", "N/D") }'
