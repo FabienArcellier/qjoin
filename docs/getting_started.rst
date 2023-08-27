@@ -5,6 +5,21 @@ In this getting started, we will discover qjoin by practice and manipulate colle
 
 qjoin will allow us to merge more collections into a single data source that we can easily manipulate with functional python operations such as list comprehension or the operators of the itertools module.
 
+.. contents::
+  :backlinks: top
+
+Installation
+************
+
+.. code-block:: bash
+
+    pip install qjoin
+
+Datasources
+***********
+
+To discover ``qjoin``, we will experiment around 3 complementary collections, the inventory of space missions, general information on these missions and their technical characteristics.
+
 .. figure:: ./lucy.png
     :alt: Lucy spacecraft
     :align: center
@@ -36,29 +51,8 @@ qjoin will allow us to merge more collections into a single data source that we 
         {'name': 'lucy', 'dimension': (13, None, None), 'power': 504, 'launch_mass': 1550},
     ]
 
-    class SpacecraftAlgorithm:
-        def __init__(self, name: str, power_simulation: Callable[[], None], torque_simulation: Callable[[], None]):
-            self.name = name
-            self.power_simulation = power_simulation
-            self.torque_simulation = torque_simulation
-
-    spacecrafts_algorithm = [
-        SpacecraftAlgorithm('Kepler', lambda: None, lambda: None),
-        SpacecraftAlgorithm('GRAIL (A)', lambda: None, lambda: None),
-        SpacecraftAlgorithm('InSight', lambda: None, lambda: None),
-        SpacecraftAlgorithm('Psyche', lambda: None, lambda: None),
-        SpacecraftAlgorithm('Kepler', lambda: None, lambda: None),
-    ]
-
-Installation
-************
-
-.. code-block:: bash
-
-    pip install qjoin
-
-Merge collections from a common key
-***********************************
+Merge collections using a common key
+************************************
 
 .. code-block:: python
     :caption: ./1_fusion_common_key.py
@@ -71,8 +65,8 @@ Merge collections from a common key
         print('')
         print('')
 
-Merge collections with a key is on 2 different attributes
-*********************************************************
+Merge collections using differents keys on both collections
+***********************************************************
 
 .. code-block:: python
     :caption: ./2_fusion_different_key_attribute.py
@@ -85,8 +79,8 @@ Merge collections with a key is on 2 different attributes
         print('')
         print('')
 
-Merge collections from artificial key
-*************************************
+Merge collections using artificial keys
+***************************************
 
 .. code-block:: python
     :caption: ./3_fusion_artificial_key.py
@@ -99,8 +93,12 @@ Merge collections from artificial key
         print('')
         print('')
 
-Merge collections and encapsulate them in a class instance
-**********************************************************
+Merge collections as a collection of aggregates
+***********************************************
+
+A strongly typed collection is easier to manipulate than a dictionary collection. Typing brings comfort to development in an IDE and facilitates the understanding of the inputs/outputs of an API.
+
+The ``as_aggregate`` function allows you to build a collection of aggregates. Aggregates all share the same type. They will be interpreted by the IDE which will offer auto-completion on each of the elements of the collection.
 
 .. code-block:: python
     :caption: ./4_fusion_as_aggregate.py
@@ -110,6 +108,7 @@ Merge collections and encapsulate them in a class instance
         spacecraft: dict = dataclasses.field(init=False)
         spacecraft_mission_infos: dict = dataclasses.field(init=False)
         spacecraft_properties: dict = dataclasses.field(init=False)
+        mission_type: str = dataclasses.field(init=False)
 
         @property
         def name:
@@ -119,10 +118,10 @@ Merge collections and encapsulate them in a class instance
             """
             If this method is present, it will be invoked after qjoin has created the object.
             """
-            print(self.spacecraft['name'])
+            self.mission_type = self.spacecraft_mission_infos.get('mission_type', 'N/D')
 
         def __str__(self):
-            return f'{self.name} - (mission: { self.spacecraft_mission_infos.get("mission_type", "N/D") }'
+            return f'{self.name} - (mission: { self.mission_type })'
 
     spacecrafts_aggregates = qjoin.on(spacecrafts)
         .join(spacecrafts_mission_infos, left=lambda s: s['name'].lower(), right=lambda s: s['mission'].lower())

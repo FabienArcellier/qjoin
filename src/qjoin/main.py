@@ -13,9 +13,9 @@ class QjoinJoin:
     Definition of a join in qjoin. We find there the collection to join, the field on which we perform the join.
     """
     collection: Iterable[Any]
-    key: Optional[Union[str, Callable[[Any], Hashable]]] = None
-    left: Optional[Union[str, Callable[[Any], Hashable]]] = None
-    right: Optional[Union[str, Callable[[Any], Hashable]]] = None
+    key: Optional[Union[int, str, Callable[[Any], Hashable]]] = None
+    left: Optional[Union[int, str, Callable[[Any], Hashable]]] = None
+    right: Optional[Union[int, str, Callable[[Any], Hashable]]] = None
 
 
 class Qjoin:
