@@ -149,6 +149,37 @@ def tests_qjoin_join_request_should_use_left_and_right_key_to_join_2_collections
     assert spacecraft_global[4][1] == None
 
 
+def tests_qjoin_join_request_should_perform_multiple_join_on_same_join_collection():
+    """
+    tests that multiple join can be performed on the same join collection
+    """
+    # Assign
+    persons = [
+        {'name': 'John', 'age': 25, 'country': 'USA', 'birth_country': 'USA'},
+        {'name': 'Paul', 'age': 18, 'country': 'UK', 'birth_country': 'USA'},
+        {'name': 'Ringo', 'age': 20, 'country': 'UK', 'birth_country': 'UK'},
+        {'name': 'George', 'age': 22, 'country': 'UK', 'birth_country': 'Japan'},
+        {'name': 'Yoko', 'age': 30, 'country': 'Japan', 'birth_country': 'Japan'},
+    ]
+
+    countries = [
+        {'name': 'USA', 'continent': 'America'},
+        {'name': 'UK', 'continent': 'Europe'},
+        {'name': 'Japan', 'continent': 'Asia'},
+    ]
+
+    # Acts
+    persons_with_country_infos = qjoin.on(persons) \
+        .join(countries, left='country', right='name') \
+        .join(countries, left='birth_country', right='name') \
+        .all()
+
+    # Assert
+    assert len(persons_with_country_infos) == 5
+    assert persons_with_country_infos[0][1]['name'] == 'USA'
+    assert persons_with_country_infos[0][2]['name'] == 'USA'
+
+
 def tests_qjoin_join_joins_collection_of_object_with_collection_of_dict():
     """
     tests that the join joins 2 collections of objects

@@ -26,4 +26,5 @@ Project links
    :maxdepth: 1
 
    getting_started
+   user_guide
    api
