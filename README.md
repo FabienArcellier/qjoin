@@ -1,6 +1,9 @@
 ## qjoin
 
-[![ci](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml/badge.svg)](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml)
+[![pypi](https://img.shields.io/pypi/v/qjoin.svg)](https://pypi.org/project/qjoin/)
+[![python](https://img.shields.io/pypi/pyversions/qjoin.svg)](https://pypi.org/project/qjoin/)
+[![CI tests](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml/badge.svg)](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml)
+[![discord](https://img.shields.io/badge/discord-qjoin-5865F2?logo=discord&logoColor=white)](https://discord.gg/nMn9YPRGSY)
 [![Documentation Status](https://readthedocs.org/projects/qjoin/badge/?version=latest)](https://qjoin.readthedocs.io/en/latest/?badge=latest)
 
 qjoin is a data manipulation library that provides simple and efficient joining and collection processing functionality. It simplifies and optimizes the process of joining different entities and provides methods for aggregating, organizing, and sorting data.
@@ -55,7 +58,7 @@ qjoin.on(persons) \
 
 #### TODO
 
-The following syntaxes are to be implemented and documented. You want to discuss it, participate or suggest other syntaxes, join us on [discord](https:discord.ggnMn9YPRGSY).
+The following syntaxes are to be implemented and documented. You want to discuss it, participate or suggest other syntaxes, join us on [discord](https://discord.gg/nMn9YPRGSY).
 
 ```python
 # Advanced transformation
