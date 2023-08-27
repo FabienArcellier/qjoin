@@ -1,9 +1,12 @@
 ## qjoin
 
-[![ci](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml/badge.svg)](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml)
+[![pypi](https://img.shields.io/pypi/v/qjoin.svg?label=version)](https://pypi.org/project/qjoin/)
+[![python](https://img.shields.io/pypi/pyversions/qjoin.svg)](https://pypi.org/project/qjoin/)
+[![CI tests](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml/badge.svg)](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml)
+[![discord](https://img.shields.io/badge/discord-qjoin-5865F2?logo=discord&logoColor=white)](https://discord.gg/nMn9YPRGSY)
 [![Documentation Status](https://readthedocs.org/projects/qjoin/badge/?version=latest)](https://qjoin.readthedocs.io/en/latest/?badge=latest)
-
-**Work in progress ..., everything has to be implemented**
+![license](https://img.shields.io/pypi/l/qjoin
+)
 
 qjoin is a data manipulation library that provides simple and efficient joining and collection processing functionality. It simplifies and optimizes the process of joining different entities and provides methods for aggregating, organizing, and sorting data.
 
@@ -47,22 +50,25 @@ person_infos = qjoin.on(persons) \
 for person, city, car in person_infos:
     print(f'{person} - {city} - {car}')
 
+# Advanced transformation
+
 qjoin.on(persons) \
     .join(cities, left=lambda p: p.city, right=lambda c: c.city) \
-    .sort(lambda p, c: p.name) \
-    .all()
+    .join(cars, left=lambda p: p.car, right=lambda c: c.car) \
+    .as_aggregate(Aggregate, ['person', 'city', 'cars'])
+```
 
+#### TODO
+
+The following syntaxes are to be implemented and documented. You want to discuss it, participate or suggest other syntaxes, join us on [discord](https://discord.gg/nMn9YPRGSY).
+
+```python
 # Advanced transformation
 
 qjoin.on(persons) \
     .join(cities, left=lambda p: p.city, right=lambda c: c.city) \
     .join(cars, left=lambda p: p.car, right=lambda c: c.car) \
     .as_aggregate(Aggregate, lambda p, ci, ca: Aggregate(p, ci, ca))
-
-qjoin.on(persons) \
-    .join(cities, left=lambda p: p.city, right=lambda c: c.city) \
-    .join(cars, left=lambda p: p.car, right=lambda c: c.car) \
-    .as_aggregate(Aggregate, ['person', 'city', 'cars'])
 
 
 qjoin.on(persons) \
@@ -71,7 +77,7 @@ qjoin.on(persons) \
 
 qjoin.on(persons) \
     .join(cities, left=lambda p: p.city, right=lambda c: c.city) \
-    .as_multilookup(lambda p, c: c.city
+    .as_multilookup(lambda p, c: c.city)
 
 # Advanced
 
@@ -80,6 +86,7 @@ qjoin.on(persons) \
     .join(cars, left=lambda p: p.car, right=lambda c: c.car, default=Car(car='unknown', constructor='unknown')) \
     .as_aggregate(Aggregate, lambda p, ci, ca: Aggregate(p, ci, ca))
 ```
+
 
 ### Try with docker
 
@@ -106,7 +113,7 @@ git clone https://github.com/FabienArcellier/qjoin.git
 
 ## Contributing
 
-**This library has to be implemented. If you want to discuss about it, contact me through [discord](https://discord.gg/nMn9YPRGSY).**
+If you want to discuss about it, contact us through [discord](https://discord.gg/nMn9YPRGSY)
 
 Contributing to this project is done through merge request (pull request in github). You can contribute to this project by discovering bugs, opening issues or submitting merge request.
 

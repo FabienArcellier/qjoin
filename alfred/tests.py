@@ -9,7 +9,7 @@ def tests():
     >>> $ alfred tests
     """
     pytest = alfred.sh("pytest")
-    alfred.run(pytest, ['tests/units'])
+    alfred.run(pytest, ['tests'])
 
 
 

@@ -5,7 +5,7 @@ WORKDIR /app
 RUN pip3 install poetry
 
 COPY . /app
-RUN poetry install
+RUN poetry install --without dev
 
 FROM python:3.10-bullseye as base
 
