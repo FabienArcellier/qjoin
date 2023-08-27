@@ -15,7 +15,7 @@ Installation
 
     pip install qjoin
 
-Datasources
+Collections
 ***********
 
 To discover ``qjoin``, we will experiment around 3 complementary collections, the inventory of space missions, general information on these missions and their technical characteristics.

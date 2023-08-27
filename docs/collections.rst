@@ -1,7 +1,10 @@
 Collections
 ###########
 
-``qjoin`` is able to merge several types of collections together. This page lists those that are supported.
+This page show the type of collections ``qjoin`` is able to merge together.
+
+.. contents::
+  :backlinks: top
 
 The elements of a collection must respect 2 constraints. Each element must be a container and each element must contain the join key.
 

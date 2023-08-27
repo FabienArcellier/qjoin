@@ -3,8 +3,10 @@ Joins
 
 This page explores the different joins possible with ``qjoin``.
 
-A join defines how a base collection and a join collection will be related together. It always applies between 2 collections. A qjoin query can consist of one or more joins.
+.. contents::
+  :backlinks: top
 
+A join defines how a base collection and a join collection will be related together. It always applies between 2 collections. A qjoin query can consist of one or more joins.
 
 Simple joins
 ============
@@ -66,7 +68,7 @@ If the join is done on different attributes between the base collection and the 
     for spacecraft, spacecraft_mission_infos in global_space_crafts:
         print(spacecraft['name'])
 
-joins using artificial key
+Joins using artificial key
 ===========================
 
 If it is necessary to transform the keys to be able to make a join between the base collection and the joining collection, then it will be necessary to make a join from an artificial key.

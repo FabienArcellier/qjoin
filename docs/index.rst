@@ -22,8 +22,11 @@ Project links
 * `Issue tracker <https://github.com/FabienArcellier/qjoin/issues>`__
 * `Chat <https://discord.gg/nMn9YPRGSY>`__
 
+Documentation
+*************
+
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    getting_started
    user_guide
