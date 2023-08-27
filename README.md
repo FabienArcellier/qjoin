@@ -1,10 +1,12 @@
 ## qjoin
 
-[![pypi](https://img.shields.io/pypi/v/qjoin.svg)](https://pypi.org/project/qjoin/)
+[![pypi](https://img.shields.io/pypi/v/qjoin.svg?label=version)](https://pypi.org/project/qjoin/)
 [![python](https://img.shields.io/pypi/pyversions/qjoin.svg)](https://pypi.org/project/qjoin/)
 [![CI tests](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml/badge.svg)](https://github.com/FabienArcellier/qjoin/actions/workflows/main.yml)
 [![discord](https://img.shields.io/badge/discord-qjoin-5865F2?logo=discord&logoColor=white)](https://discord.gg/nMn9YPRGSY)
 [![Documentation Status](https://readthedocs.org/projects/qjoin/badge/?version=latest)](https://qjoin.readthedocs.io/en/latest/?badge=latest)
+![license](https://img.shields.io/pypi/l/qjoin
+)
 
 qjoin is a data manipulation library that provides simple and efficient joining and collection processing functionality. It simplifies and optimizes the process of joining different entities and provides methods for aggregating, organizing, and sorting data.
 
